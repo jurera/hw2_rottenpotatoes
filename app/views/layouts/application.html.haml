@@ -8,10 +8,16 @@
 
   %body
     %h1.title Rotten Potatoes!
+
     #main
+	
       - if flash[:notice]
         #notice.message= flash[:notice]
       - elsif flash[:warning]
         #warning.message= flash[:warning]
 
-      = yield
+    = yield  
+
+  
+
+
