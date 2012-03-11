@@ -14,8 +14,16 @@ class MoviesController < ApplicationController
 
     def index
 		order = params[:order]
+		case order
+		when 'title'
+			ordering,@title_header = {:order => :title}, 'hilite'
+		when 'release_date'
+			ordering,@date_header = {:order => :release_date}, 'hilite'
+		end
+		@all_ratings = Movie.all_ratings
+		@selected_ratings = params[:ratings] ||{}
 
-		@movies = Movie.order(order)
+	    @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
 	end
 	
 
