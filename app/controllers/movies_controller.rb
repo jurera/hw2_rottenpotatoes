@@ -13,7 +13,9 @@ class MoviesController < ApplicationController
   # 
 
     def index
-		order = params[:order]
+		
+
+		order = params[:order] || session[:order] 
 		case order
 		when 'title'
 			ordering,@title_header = {:order => :title}, 'hilite'
@@ -21,9 +23,21 @@ class MoviesController < ApplicationController
 			ordering,@date_header = {:order => :release_date}, 'hilite'
 		end
 		@all_ratings = Movie.all_ratings
-		@selected_ratings = params[:ratings] ||{}
+		@selected_ratings = params[:ratings] || session[:ratings] || {}
+		
+		if params[:order] != session[:order]
+			session[:order] = order
+			redirect_to :order => order, :ratings => @selected_ratings and return
+		end
+
+		if params[:ratings] != session[:ratings] and @selected_ratings != {}
+			session[:order] = order
+			session[:ratings] = @selected_ratings
+			redirect_to :order => order, :ratings => @selected_ratings and return
+		end
 
 	    @movies = Movie.find_all_by_rating(@selected_ratings.keys, ordering)
+
 	end
 	
 
